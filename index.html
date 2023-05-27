@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Калькулятор вартості товару та доставки</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+
+        #result h3 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Калькулятор вартості товару та доставки</h2>
+    <div class="form-group">
+        <label for="amount">Сума замовлення в юанях:</label>
+        <input type="number" id="amount" min="0">
+    </div>
+    <div class="form-group">
+        <label for="weight">Вага посилки (у кг):</label>
+        <input type="number" id="weight" min="0">
+    </div>
+    <div class="form-group">
+        <label for="shipping">Вид доставки:</label>
+        <select id="shipping">
+            <option value="air">Літаком</option>
+            <option value="sea">Морем</option>
+        </select>
+    </div>
+    <button onclick="calculate()">Розрахувати</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    function calculate() {
+        var amountElement = document.getElementById("amount");
+        var amountYuan = amountElement.value;
+
+        var commission = 0;
+
+        if (amountYuan < 149) {
+            commission = amountYuan * 0.2;
+        } else if (amountYuan < 300) {
+            commission = amountYuan * 0.18;
+        } else if (amountYuan < 500) {
+            commission = amountYuan * 0.16;
+        } else if (amountYuan < 700) {
+            commission = amountYuan * 0.12;
+        } else {
+            commission = amountYuan * 0.1;
+        }
+
+        var weightElement = document.getElementById("weight");
+        var weight = weightElement.value;
+
+        var shippingElement = document.getElementById("shipping");
+        var shippingType = shippingElement.value;
+        var shippingCost = 0;
+
+        if (shippingType === "air") {
+            shippingCost = weight * 18.5;
+        } else if (shippingType === "sea") {
+            shippingCost = weight * 8.5;
+        }
+
+        var exchangeRateYuanToUah = 5.8; // Замініть на актуальний курс гривні до юаня
+        var exchangeRateDollarToUah = 37.45; // Замініть на актуальний курс гривні до долара
+        var amountUah = amountYuan * exchangeRateYuanToUah;
+        var shippingCostUah = shippingCost * exchangeRateDollarToUah;
+        var totalAmount = amountUah + commission * exchangeRateYuanToUah;
+        var totalAmountWithShipping = totalAmount + shippingCostUah;
+
+        var resultElement = document.getElementById("result");
+        resultElement.innerHTML = "<h3>Вартість товару з комісією:</h3>" +
+            "<p>" + totalAmount.toFixed(2) + " грн</p>" +
+            "<h3>Вартість доставки:</h3>" +
+            "<p>" + shippingCost.toFixed(2) + " доларів</p>" +
+            "<h3>Загальна вартість:</h3>" +
+            "<p>" + totalAmountWithShipping.toFixed(2) + " грн</p>";
+    }
+</script>
+</body>
+</html>
